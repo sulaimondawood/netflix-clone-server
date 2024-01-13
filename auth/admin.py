@@ -6,3 +6,5 @@ from .forms import CustomUserChangeForm,CustomUserCreationForm
 class CustomUserAdmin(UserAdmin):
   add_form = CustomUserCreationForm
   form = CustomUserChangeForm
+
+admin.site.register(CustomUser, CustomUserAdmin)
