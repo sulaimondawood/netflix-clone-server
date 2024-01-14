@@ -30,15 +30,8 @@ class CustomUserManager(BaseUserManager):
     
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
-  email = models.EmailField(unique=True, )
-  username = models.CharField(max_length=150)
-  first_name = models.CharField(max_length=150)
-  last_name = models.CharField(max_length=150)
-  is_active = models.BooleanField(default=True)
-  is_staff = models.BooleanField(default=False)
-  date_joined = models.DateTimeField(auto_now_add=True)
-
+class CustomUser(AbstractUser):
+  email = models.EmailField(unique=True)
   USERNAME_FIELD = "email"
   EMAIL_FIELD = 'email'
   REQUIRED_FIELDS= ()
