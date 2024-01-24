@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
-    'base.apps.BaseConfig'
+    'base.apps.BaseConfig',
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +128,19 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authentication.CustomUser'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+
+# Django project settings.py
+
+from datetime import timedelta
+SIMPLE_JWT = {
+  "ACCESS_TOKEN_LIFETIME":timedelta(minutes=5),
+  "REFRESH_TOKEN_LIFETIME": timedelta(days=1)
+}
+
