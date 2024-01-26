@@ -8,7 +8,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
   class Meta:
     model= CustomUser
-    fields = ['email','username', 'password' 'password2'] 
+    fields = ['email','username', 'password', 'password2'] 
     extra_kwargs ={'password':{"write_only": True}}
 
   def validate(self, data):
@@ -16,8 +16,14 @@ class RegisterSerializer(serializers.ModelSerializer):
       raise serializers.ValidationError("Password does not match")
     return data
   
-  # def create(self, validate_data):
-  #   passoword = validate_data.get('password')
-  #   user = CustomUser(**validate_data)
-  #   user.set_password(passoword)
-  #   user.save()
+  def create(self, validate_data):
+    password = validate_data.get('password')
+    user = CustomUser(email = validate_data['email'], username= validate_data['username'])
+    user.set_password(password)
+    user.save()
+    return user
+
+
+class LoginSerializer(serializers.Serializer):
+  email = serializers.EmailField()
+  password = serializers.CharField(write_only=True)
