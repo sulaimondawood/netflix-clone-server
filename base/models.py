@@ -4,40 +4,33 @@ from django.conf import settings
 
 CustomUser = settings.AUTH_USER_MODEL
 
-class Movie(models.Model):
+class Comment(models.Model):
 
-  GENRE_CHOICES =[
-    ("ACTION", 'Action'),
-    ("COMEDY", "Comedy"),
-    ("THRILLER", 'Thriller'),
-    ("DRAMA", 'Drama'),
-    ("ROMANCE", 'Romance'),
-    ("SCIFI", 'Sci-Fi'),
-    ("HORROR", 'Horror'),
-  ]
+  comment = models.TextField()
+  date = models.DateTimeField(auto_now=True)
 
-  id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-  title = models.CharField(max_length=255)
-  description = models.TextField()
-  image_cover = models.ImageField(upload_to='media/')
-  image = models.ImageField(upload_to='media/')
-  views = models.IntegerField(default=0)
-  video = models.FileField()
-  ratings = models.FloatField()
-  release_date = models.DateField()
-  genres = models.CharField(choices=GENRE_CHOICES, max_length=25, default='ACTION')
-  
+  def __str__(self):
+    return 
+
 
 class Post(models.Model):
+
+  STATUS_CHOICE = (
+    ("DRAFT", "Draft"),
+    ("PUBLISHED", "Published")
+  )
 
   id = models.UUIDField(default=uuid.uuid4, unique=True)
   title = models.CharField(max_length=255, blank=True)
   content = models.TextField()
   author= models.ForeignKey(CustomUser, on_delete=models.CASCADE)
   excerpt =models.TextField()
-  # draft_status =
+  draft_status =models.CharField(choices=STATUS_CHOICE, default='PUBLISHED')
   publish_date = models.DateTimeField(auto_now=True)
-  # category = models.
+  category = models.ManyToManyField('Category')
+  likes = models.IntegerField(default=0)
+  comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+  views = models.IntegerField(default=0, blank=True)
 
   def __str__(self):
     return self.title
@@ -49,9 +42,11 @@ class Category(models.Model):
   def __str__(self):
     return self.name
   
+  
 class Tags(models.Model):
   
   tag_name = models.CharField(max_length=255)
 
   def __str__(self):
     return self.tag_name
+  
