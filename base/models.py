@@ -1,16 +1,19 @@
 from django.db import models
 import uuid
 from django.conf import settings
+from django.utils import timezone
 
 CustomUser = settings.AUTH_USER_MODEL
 
 class Comment(models.Model):
 
   comment = models.TextField()
-  date = models.DateTimeField(auto_now=True)
+  updated_at = models.DateTimeField(auto_now=True)
+  created_at = models.DateTimeField(default=timezone.now)
+
 
   def __str__(self):
-    return 
+    return self.comment[:20]
 
 
 class Post(models.Model):
@@ -27,12 +30,12 @@ class Post(models.Model):
   excerpt =models.TextField()
   draft_status =models.CharField(max_length=255, choices=STATUS_CHOICE, default='PUBLISHED')
   publish_date = models.DateTimeField(auto_now=True)
-  category = models.ManyToManyField('Category')
+  category = models.ManyToManyField('Category', blank=True)
   likes = models.IntegerField(default=0)
   comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
   views = models.IntegerField(default=0, blank=True)
-  updated_at = models.DateTimeField(aut_now=True)
-  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
+  created_at = models.DateTimeField(default=timezone.now )
 
   class Meta:
     ordering = ('-updated_at', '-created_at')
@@ -45,11 +48,10 @@ class Category(models.Model):
   category_name = models.CharField(max_length=255)
 
   def __str__(self):
-    return self.name
+    return self.category_name
   
   
-class Tags(models.Model):
-  
+class Tag(models.Model):
   tag_name = models.CharField(max_length=255)
 
   def __str__(self):
