@@ -1,9 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from .models import Post
 
-
-class MovieList(APIView):
-  permission_classes = AllowAny
+class Postist(APIView):
+  permission_classes = [AllowAny]
 
   def get(self, request):
-    pass
+    objs = Post.objects.all()
+      

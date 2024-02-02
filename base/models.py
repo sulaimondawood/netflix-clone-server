@@ -20,17 +20,22 @@ class Post(models.Model):
     ("PUBLISHED", "Published")
   )
 
-  id = models.UUIDField(default=uuid.uuid4, unique=True)
+  id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
   title = models.CharField(max_length=255, blank=True)
   content = models.TextField()
   author= models.ForeignKey(CustomUser, on_delete=models.CASCADE)
   excerpt =models.TextField()
-  draft_status =models.CharField(choices=STATUS_CHOICE, default='PUBLISHED')
+  draft_status =models.CharField(max_length=255, choices=STATUS_CHOICE, default='PUBLISHED')
   publish_date = models.DateTimeField(auto_now=True)
   category = models.ManyToManyField('Category')
   likes = models.IntegerField(default=0)
   comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
   views = models.IntegerField(default=0, blank=True)
+  updated_at = models.DateTimeField(aut_now=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  class Meta:
+    ordering = ('-updated_at', '-created_at')
 
   def __str__(self):
     return self.title

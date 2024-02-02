@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import Movie
-# Register your models here.
-admin.site.register(Movie)
+from .models import Post
+
+admin.site.register(Post)
