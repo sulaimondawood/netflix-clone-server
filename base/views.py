@@ -4,10 +4,28 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from .models import Post
-from .serializers import PostSerializer
+from .models import Post, Tag, Category
+from .serializers import PostSerializer, PostCreateSerializer,TagListSerializer, CategoryListSerializer
 
  
+class TagList(APIView):
+  qs = Tag.objects.all()
+
+  def get(self, request):
+    serializer = TagListSerializer(self.qs, many=True)
+    return Response({'message':"successfull",
+                     "status":True,
+                     "data": serializer.data}, status=status.HTTP_200_OK)
+
+
+class CategoryCreateList(APIView):
+  qs = Category.objects.all()
+
+  def get(self, request):
+    serializer = CategoryListSerializer(self.qs, many=True)
+    return Response({'message':"successfull",
+                     "status":True,
+                     "data": serializer.data}, status=status.HTTP_200_OK)
 
 class PostCreateList(APIView):
   
@@ -23,12 +41,17 @@ class PostCreateList(APIView):
 
   
   def post(self, request):
-    title = request.data.get('title')
-    content = request.data.get('content')
-    excerpt = request.data.get('excerpt')
-    draft_status = request.data.get('draft_status')
-    tag = request.data.get('tag')
-    category = request.data.get('category')
+    serializer = PostCreateSerializer(data= request.data,)
+    if serializer.is_valid(raise_exception=True):
+      serializer.save(author = request.user)
+      return Response({
+        'message':"successfull",
+        "data":serializer.data,
+        "status": True
+      }, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 

@@ -45,10 +45,9 @@ class PostCreateSerializer(serializers.Serializer):
     ("PUBLISHED", "Published")
   )
   title = serializers.CharField(max_length=255)
-  content = serializers.CharField()
-  excerpt =serializers.CharField()
+  content = serializers.CharField(required=False, allow_blank=True)
+  excerpt =serializers.CharField(required=False, allow_blank=True)
   draft_status =serializers.ChoiceField(choices=STATUS_CHOICE, default="DRAFT")
-  # publish_date = serializers.DateTimeField()
   category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
   tag= serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all() ,many=True)
 
@@ -65,5 +64,11 @@ class PostCreateSerializer(serializers.Serializer):
 
 
   def create(self, validated_data):
+    title = validated_data.get('title')
+    content = validated_data.get('content')
+
+    if content is None:
+      content = title
+      
     return Post.objects.create(**validated_data)
   

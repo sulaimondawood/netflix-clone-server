@@ -24,9 +24,9 @@ class Post(models.Model):
   )
 
   id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
+  author= models.ForeignKey(CustomUser, on_delete=models.CASCADE)
   title = models.CharField(max_length=255, blank=True)
   content = models.TextField()
-  author= models.ForeignKey(CustomUser, on_delete=models.CASCADE)
   excerpt =models.TextField()
   draft_status =models.CharField(max_length=255, choices=STATUS_CHOICE, default='DRAFT')
   publish_date = models.DateTimeField(auto_now=True)
