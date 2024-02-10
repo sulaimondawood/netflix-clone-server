@@ -17,21 +17,18 @@ class PostCreateList(APIView):
 
     return Response({
       "data":serializer.data,
-      "message": "succesfull",
+      "message": "successfull",
       "status": True
     }, status=status.HTTP_200_OK)
 
-
-
-# class PostCreateList(generics.ListCreateAPIView):
-#   queryset = Post.objects.all()
-#   serializer_class = PostSerializer
-#   permission_classes = [IsAuthenticatedOrReadOnly]
-
-#   def list(self, request):
-#     queryset = self.ge
-
   
-#   # def perform_create(self, serializer):
-#   #   # instance = se
-#   #   pass
+  def post(self, request):
+    title = request.data.get('title')
+    content = request.data.get('content')
+    excerpt = request.data.get('excerpt')
+    draft_status = request.data.get('draft_status')
+    tag = request.data.get('tag')
+    category = request.data.get('category')
+
+
+

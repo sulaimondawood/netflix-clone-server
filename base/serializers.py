@@ -51,3 +51,19 @@ class PostCreateSerializer(serializers.Serializer):
   # publish_date = serializers.DateTimeField()
   category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
   tag= serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all() ,many=True)
+
+
+  def update(self, instance, validated_data):
+    instance.title = validated_data.get('title', instance.title)
+    instance.content = validated_data.get('content', instance.content)
+    instance.excerpt = validated_data.get('excerpt', instance.excerpt)
+    instance.draft_status = validated_data.get('draft_status', instance.draft_status)
+    instance.tag = validated_data.get('tag', instance.tag)
+    instance.category = validated_data.get('category', instance.category)
+    instance.save()
+    return instance
+
+
+  def create(self, validated_data):
+    return Post.objects.create(**validated_data)
+  
