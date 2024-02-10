@@ -28,7 +28,7 @@ class Post(models.Model):
   content = models.TextField()
   author= models.ForeignKey(CustomUser, on_delete=models.CASCADE)
   excerpt =models.TextField()
-  draft_status =models.CharField(max_length=255, choices=STATUS_CHOICE, default='PUBLISHED')
+  draft_status =models.CharField(max_length=255, choices=STATUS_CHOICE, default='DRAFT')
   publish_date = models.DateTimeField(auto_now=True)
   category = models.ManyToManyField('Category')
   tag= models.ManyToManyField('Tag')

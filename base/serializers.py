@@ -44,18 +44,10 @@ class PostCreateSerializer(serializers.Serializer):
     ("DRAFT", "Draft"),
     ("PUBLISHED", "Published")
   )
-
-
-  id = serializers.UUIDField(read_only=True)
   title = serializers.CharField(max_length=255)
   content = serializers.CharField()
   excerpt =serializers.CharField()
-  draft_status =serializers.ChoiceField(choices=STATUS_CHOICE, default="PUBLISHED")
-  publish_date = serializers.DateTimeField()
+  draft_status =serializers.ChoiceField(choices=STATUS_CHOICE, default="DRAFT")
+  # publish_date = serializers.DateTimeField()
   category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
   tag= serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all() ,many=True)
-  likes = serializers.IntegerField()
-  comment = serializers.PrimaryKeyRelatedField(queryset=Comment.objects.all(), many=True)
-  views = serializers.IntegerField()
-  updated_at = serializers.DateTimeField()
-  created_at = serializers.DateTimeField()
