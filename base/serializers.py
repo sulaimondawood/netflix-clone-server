@@ -33,7 +33,7 @@ class PostSerializer(serializers.ModelSerializer):
   category = CategoryListSerializer(many=True)
   tag= TagListSerializer(many=True)
 
-  
+
   class Meta:
     model = Post
     fields = ('id', "author", "title", "content",  "comment", 'tag', "category","excerpt","draft_status", "publish_date", "likes","views", "updated_at","created_at")
@@ -66,16 +66,16 @@ class PostCreateSerializer(serializers.Serializer):
 
     if "category" in validated_data:
       instance.category.set(validated_data["category"])
-    # Incorrect implemmentatio
-    # instance.tag = validated_data.get('tag', instance.tag)
-    # instance.category = validated_data.get('category', instance.category)
-    # Incorrect implemmentatio
+  
     instance.save()
     return instance
 
 
   def create(self, validated_data):
     title = validated_data.get('title')
+    print("title")
+    print(title)
+    print("title")
     content = validated_data.get('content')
     # author = self.context['request']
 

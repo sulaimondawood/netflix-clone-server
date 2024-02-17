@@ -24,7 +24,8 @@ class Post(models.Model):
   )
 
   id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
-  author= models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
+  # author= models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+  author= models.ForeignKey(CustomUser, on_delete=models.CASCADE)
   title = models.CharField(max_length=255, blank=True, null=True)
   content = models.TextField()
   excerpt =models.TextField()
@@ -37,6 +38,17 @@ class Post(models.Model):
   views = models.IntegerField(default=0, blank=True)
   updated_at = models.DateTimeField(auto_now=True)
   created_at = models.DateTimeField(default=timezone.now )
+
+
+
+  @classmethod
+  def get_default_author(cls):
+    return CustomUser.objects.first()
+
+  def save(self, *args, **kwargs):
+    if not self.author:
+      self.author = self.get_default_author()
+      super().save(*args, **kwargs)
 
   class Meta:
     ordering = ('-updated_at', '-created_at')
