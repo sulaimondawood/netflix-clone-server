@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from .models import Post, Tag, Category
 from .serializers import PostSerializer, PostCreateSerializer,TagListSerializer, CategoryListSerializer
 
+from base.permissions import CreatedBy
  
 class TagList(APIView):
   qs = Tag.objects.all()
@@ -27,8 +28,11 @@ class CategoryCreateList(APIView):
                      "status":True,
                      "data": serializer.data}, status=status.HTTP_200_OK)
 
+
+
 class PostCreateList(APIView):
-  
+  # permission_classes= [IsAuthenticatedOrReadOnly ]
+
   def get(self, request):
     qs = Post.objects.all()
     serializer = PostSerializer(qs, many=True)
@@ -41,7 +45,7 @@ class PostCreateList(APIView):
 
   
   def post(self, request):
-    serializer = PostCreateSerializer(data= request.data,)
+    serializer = PostCreateSerializer(data= request.data, context={"request", request})
     if serializer.is_valid(raise_exception=True):
       serializer.save(author = request.user)
       return Response({
@@ -54,4 +58,38 @@ class PostCreateList(APIView):
 
 
 
+class PostDeleteEditRetrieve(APIView):
+  permission_classes = [CreatedBy]
 
+  def get(self, request, pk):
+    queryset = Post.objects.filter(id = pk)
+    serializer = PostSerializer(queryset, many=True)
+    return Response({
+      "data":serializer.data,
+      "message": "successfull",
+      "status": True
+    }, status=status.HTTP_200_OK)
+
+
+  def put(self, request, pk):
+    queryset = Post.objects.get(id=pk)
+    serializer= PostCreateSerializer(queryset, data=request.data)
+
+    if serializer.is_valid():
+      serializer.save()
+
+      return Response({
+      'message':"successfull",
+      "data": serializer.data,
+      "status": True,
+      }, status=status.HTTP_200_OK)
+
+    return Response({"error": "Failed"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+  def delete(self, request, pk):
+    queryset= Post.objects.get(id=pk)
+    queryset.delete()
+
+    return Response({"message": "successfull",
+                     "status": True}, status=status.HTTP_204_NO_CONTENT)

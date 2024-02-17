@@ -7,7 +7,7 @@ CustomUser = settings.AUTH_USER_MODEL
 
 class Comment(models.Model):
 
-  comment = models.TextField()
+  comment = models.TextField(blank=True, null=True)
   updated_at = models.DateTimeField(auto_now=True)
   created_at = models.DateTimeField(default=timezone.now)
 
@@ -24,14 +24,14 @@ class Post(models.Model):
   )
 
   id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
-  author= models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-  title = models.CharField(max_length=255, blank=True)
+  author= models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
+  title = models.CharField(max_length=255, blank=True, null=True)
   content = models.TextField()
   excerpt =models.TextField()
   draft_status =models.CharField(max_length=255, choices=STATUS_CHOICE, default='DRAFT')
   publish_date = models.DateTimeField(auto_now=True)
-  category = models.ManyToManyField('Category')
-  tag= models.ManyToManyField('Tag')
+  category = models.ManyToManyField('Category', default=1)
+  tag= models.ManyToManyField('Tag', default=1)
   likes = models.IntegerField(default=0)
   comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
   views = models.IntegerField(default=0, blank=True)
@@ -58,3 +58,6 @@ class Tag(models.Model):
   def __str__(self):
     return self.tag_name
   
+
+
+

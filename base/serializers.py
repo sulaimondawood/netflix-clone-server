@@ -36,7 +36,8 @@ class PostSerializer(serializers.ModelSerializer):
     model = Post
     fields = ('id', "author", "title", "content",  "comment", 'tag', "category","excerpt","draft_status", "publish_date", "likes","views", "updated_at","created_at")
 
-    
+
+
 
 class PostCreateSerializer(serializers.Serializer):
 
@@ -48,8 +49,8 @@ class PostCreateSerializer(serializers.Serializer):
   content = serializers.CharField(required=False, allow_blank=True)
   excerpt =serializers.CharField(required=False, allow_blank=True)
   draft_status =serializers.ChoiceField(choices=STATUS_CHOICE, default="DRAFT")
-  category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
-  tag= serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all() ,many=True)
+  category = serializers.PrimaryKeyRelatedField(required=False, queryset=Category.objects.all(), many=True)
+  tag= serializers.PrimaryKeyRelatedField(required=False, queryset=Tag.objects.all() ,many=True)
 
 
   def update(self, instance, validated_data):
@@ -57,8 +58,11 @@ class PostCreateSerializer(serializers.Serializer):
     instance.content = validated_data.get('content', instance.content)
     instance.excerpt = validated_data.get('excerpt', instance.excerpt)
     instance.draft_status = validated_data.get('draft_status', instance.draft_status)
+
+    # Incorrect implemmentatio
     instance.tag = validated_data.get('tag', instance.tag)
     instance.category = validated_data.get('category', instance.category)
+    # Incorrect implemmentatio
     instance.save()
     return instance
 
@@ -66,9 +70,11 @@ class PostCreateSerializer(serializers.Serializer):
   def create(self, validated_data):
     title = validated_data.get('title')
     content = validated_data.get('content')
+    # author = self.context['request']
 
     if content is None:
       content = title
       
-    return Post.objects.create(**validated_data)
+    return Post.objects.create( content= content, **validated_data)
+    # return Post.objects.create(author=author, content= content, **validated_data)
   

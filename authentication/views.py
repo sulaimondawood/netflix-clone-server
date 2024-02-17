@@ -3,10 +3,9 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework import response, status
-from .serializers import RegisterSerializer, LoginSerializer
-
+from .serializers import RegisterSerializer, LoginSerializer,  UserSerializer
 from django.conf import settings
-
+from .models import CustomUser
 
 def get_tokens_for_user(user):
   refresh = RefreshToken.for_user(user)
@@ -15,6 +14,15 @@ def get_tokens_for_user(user):
     "refresh": str(refresh),
     "access": str(refresh.access_token)
   }
+
+
+class ListUsers(APIView):
+  qs = CustomUser.objects.all()
+  serializer = UserSerializer(qs, many=True)
+
+  def get(self, request):
+    
+    return response.Response(self.serializer.data, status=status.HTTP_200_OK)
 
 
 class RegisterUser(APIView):
