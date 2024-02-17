@@ -32,6 +32,8 @@ class PostSerializer(serializers.ModelSerializer):
   author = AuthorSerializer()
   category = CategoryListSerializer(many=True)
   tag= TagListSerializer(many=True)
+
+  
   class Meta:
     model = Post
     fields = ('id', "author", "title", "content",  "comment", 'tag', "category","excerpt","draft_status", "publish_date", "likes","views", "updated_at","created_at")
@@ -59,9 +61,14 @@ class PostCreateSerializer(serializers.Serializer):
     instance.excerpt = validated_data.get('excerpt', instance.excerpt)
     instance.draft_status = validated_data.get('draft_status', instance.draft_status)
 
+    if "tag" in validated_data:
+      instance.tag.set(validated_data["tag"])
+
+    if "category" in validated_data:
+      instance.category.set(validated_data["category"])
     # Incorrect implemmentatio
-    instance.tag = validated_data.get('tag', instance.tag)
-    instance.category = validated_data.get('category', instance.category)
+    # instance.tag = validated_data.get('tag', instance.tag)
+    # instance.category = validated_data.get('category', instance.category)
     # Incorrect implemmentatio
     instance.save()
     return instance
@@ -75,6 +82,6 @@ class PostCreateSerializer(serializers.Serializer):
     if content is None:
       content = title
       
-    return Post.objects.create( content= content, **validated_data)
+    return Post.objects.create(**validated_data)
     # return Post.objects.create(author=author, content= content, **validated_data)
   

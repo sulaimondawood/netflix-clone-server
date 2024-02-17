@@ -17,12 +17,12 @@ def get_tokens_for_user(user):
 
 
 class ListUsers(APIView):
-  qs = CustomUser.objects.all()
-  serializer = UserSerializer(qs, many=True)
 
   def get(self, request):
-    
-    return response.Response(self.serializer.data, status=status.HTTP_200_OK)
+    qs = CustomUser.objects.all()
+    print(qs)
+    serializer = UserSerializer(qs, many=True).data
+    return response.Response(serializer, status=status.HTTP_200_OK)
 
 
 class RegisterUser(APIView):

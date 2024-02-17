@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.conf import settings
-
-CustomUser = settings.AUTH_USER_MODEL
+from .models import CustomUser
+# CustomUser = settings.AUTH_USER_MODEL
 
 class RegisterSerializer(serializers.ModelSerializer):
   password2 = serializers.CharField(write_only= True)
@@ -31,6 +31,10 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+
   class Meta: 
     model= CustomUser
-    fields= "__all__"
+    fields=("id", "username", "first_name")
+
+
+
