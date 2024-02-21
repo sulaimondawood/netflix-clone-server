@@ -24,7 +24,6 @@ class Post(models.Model):
   )
 
   id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
-  # author= models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
   author= models.ForeignKey(CustomUser, on_delete=models.CASCADE)
   title = models.CharField(max_length=255, blank=True, null=True)
   content = models.TextField()

@@ -77,11 +77,11 @@ class PostCreateSerializer(serializers.Serializer):
     print(title)
     print("title")
     content = validated_data.get('content')
-    # author = self.context['request']
+    author = self.context['request']
 
     if content is None:
       content = title
       
-    return Post.objects.create(**validated_data)
-    # return Post.objects.create(author=author, content= content, **validated_data)
+    # return Post.objects.create(**validated_data)
+    return Post.objects.create(author=author,**validated_data)
   
