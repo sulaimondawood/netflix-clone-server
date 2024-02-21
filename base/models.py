@@ -3,7 +3,7 @@ import uuid
 from django.conf import settings
 from django.utils import timezone
 from authentication.models import CustomUser
-# CustomUser = settings.AUTH_USER_MODEL
+
 
 class Comment(models.Model):
 

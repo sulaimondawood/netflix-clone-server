@@ -45,7 +45,6 @@ class PostCreateList(APIView):
 
   
   def post(self, request):
-    # serializer = PostCreateSerializer(data= request.data, context={"request", request})
     serializer = PostCreateSerializer(data= request.data, context={"request", request})
     if serializer.is_valid(raise_exception=True):
       # serializer.save(author = request.user)
