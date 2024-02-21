@@ -2,8 +2,8 @@ from django.db import models
 import uuid
 from django.conf import settings
 from django.utils import timezone
-
-CustomUser = settings.AUTH_USER_MODEL
+from authentication.models import CustomUser
+# CustomUser = settings.AUTH_USER_MODEL
 
 class Comment(models.Model):
 
@@ -33,7 +33,7 @@ class Post(models.Model):
   category = models.ManyToManyField('Category')
   tag= models.ManyToManyField('Tag')
   likes = models.IntegerField(default=0)
-  comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+  comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True)
   views = models.IntegerField(default=0, blank=True)
   updated_at = models.DateTimeField(auto_now=True)
   created_at = models.DateTimeField(default=timezone.now )
@@ -45,8 +45,9 @@ class Post(models.Model):
     return CustomUser.objects.first()
 
   def save(self, *args, **kwargs):
-    if not self.author:
-      self.author = self.get_default_author()
+    user = self.get_default_author()
+    if not self.author_id:
+      self.author = user
       super().save(*args, **kwargs)
 
   class Meta:

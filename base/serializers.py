@@ -36,7 +36,8 @@ class PostSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Post
-    fields = ('id', "author", "title", "content",  "comment", 'tag', "category","excerpt","draft_status", "publish_date", "likes","views", "updated_at","created_at")
+    fields = ('id', "author", "title", "content",  'tag', "category","excerpt","draft_status", "publish_date", "likes","views", "updated_at","created_at")
+    # fields = ('id', "author", "title", "content",  "comment", 'tag', "category","excerpt","draft_status", "publish_date", "likes","views", "updated_at","created_at")
 
 
 
@@ -77,11 +78,11 @@ class PostCreateSerializer(serializers.Serializer):
     print(title)
     print("title")
     content = validated_data.get('content')
-    author = self.context['request']
+    # author = self.context['request']
 
     if content is None:
       content = title
       
-    # return Post.objects.create(**validated_data)
-    return Post.objects.create(author=author,**validated_data)
+    return Post.objects.create(**validated_data)
+    # return Post.objects.create(author=author,**validated_data)
   
