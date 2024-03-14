@@ -74,9 +74,6 @@ class PostCreateSerializer(serializers.Serializer):
 
   def create(self, validated_data):
     title = validated_data.get('title')
-    print("title")
-    print(title)
-    print("title")
     content = validated_data.get('content')
     # author = self.context['request']
 
@@ -86,3 +83,33 @@ class PostCreateSerializer(serializers.Serializer):
     return Post.objects.create(**validated_data)
     # return Post.objects.create(author=author,**validated_data)
   
+
+
+class PostUpdateSerializer(serializers.Serializer):
+
+  STATUS_CHOICES = (
+    ("DRAFT", 'Draft'),
+    ("PUBLISHED","Published") 
+  )
+
+  title = serializers.CharField(required=False, allow_blank=True)
+  content = serializers.CharField(required=False, allow_blank=True)
+  excerpt = serializers.CharField(required=False , allow_blank=True)
+  draft_status = serializers.ChoiceField(choices=STATUS_CHOICES, default="DRAFT", required=False, allow_blank=True)
+  tag= serializers.PrimaryKeyRelatedField(many=True, required=False, queryset=Tag.objects.all())
+  category = serializers.PrimaryKeyRelatedField(required=False, queryset=Category.objects.all(), many=True)
+
+  def update(self, instance, validated_data):
+    instance.title = validated_data.get("content", instance.title)
+    instance.content = validated_data.get("content", instance.content)
+    instance.excerpt = validated_data.get('excerpt', instance.excerpt)
+    instance.draft_status = validated_data.get("draft_status", instance.draft_status)
+
+    if "tag" in validated_data:
+      instance.tag.set(validated_data["tag"])
+
+    if "category" in validated_data:
+      instance.tag.set(validated_data["category"])
+
+    instance.save()
+    return instance

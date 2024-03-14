@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from .models import Post, Tag, Category
-from .serializers import PostSerializer, PostCreateSerializer,TagListSerializer, CategoryListSerializer
+from .serializers import PostSerializer, PostCreateSerializer,TagListSerializer, CategoryListSerializer, PostUpdateSerializer
 
 from base.permissions import CreatedBy
  
@@ -74,17 +74,16 @@ class PostDeleteEditRetrieve(APIView):
 
   def put(self, request, pk):
     queryset = Post.objects.get(id=pk)
-    serializer= PostCreateSerializer(queryset, data=request.data)
-
+    serializer= PostUpdateSerializer(queryset, data=request.data)
+   
     if serializer.is_valid():
       serializer.save()
-
       return Response({
       'message':"successfull",
       "data": serializer.data,
       "status": True,
       }, status=status.HTTP_200_OK)
-
+ 
     return Response({"error": "Failed"}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -94,3 +93,21 @@ class PostDeleteEditRetrieve(APIView):
 
     return Response({"message": "successfull",
                      "status": True}, status=status.HTTP_204_NO_CONTENT)
+
+
+class GenericClassForGettingData(APIView):
+  
+  def get(self, request):
+
+    pass
+
+
+  def delete(self, request):
+    pass
+
+  def post(self, request,pk):
+    pass
+
+
+  def  put(self, request):
+    pass
