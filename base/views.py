@@ -129,3 +129,36 @@ class CommentCreateList(APIView):
     }, status=status.HTTP_400_BAD_REQUEST)
 
 
+class CommentDeleteUpdateRetrieve(APIView):
+
+  def get_comment(self, pk):
+    try: 
+      return Comment.objects.get(id=pk)
+    except Comment.DoesNotExist:
+      return None
+    
+  def get(self, request, pk):
+    serializer  = CommentSerializer
+    if self.get_comment is not None:
+      return Response(serializer(self.get_comment(pk))).data
+    return Response(status=status.HTTP_404_NOT_FOUND)
+ 
+  
+  def put(self, request,pk):
+    comment = self.get_comment(pk)
+    if comment is not None:
+      serializer = CommentSerializer(comment, data= request.data)
+      if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+  def delete(self, request, pk):
+    serializer = CommentSerializer(comment, data= request.data)
+    comment = self.get_comment(pk)
+    if comment is None:
+      return Response(serializer.errors ,status=status.HTTP_404_NOT_FOUND)
+    comment.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
