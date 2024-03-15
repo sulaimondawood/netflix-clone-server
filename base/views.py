@@ -4,10 +4,10 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from .models import Post, Tag, Category
-from .serializers import PostSerializer, PostCreateSerializer,TagListSerializer, CategoryListSerializer, PostUpdateSerializer
+from .models import Post, Tag, Category, Comment
+from .serializers import PostSerializer, PostCreateSerializer,TagListSerializer, CategoryListSerializer, PostUpdateSerializer, CommentSerializer
 
-from base.permissions import CreatedBy
+from base.permissions import IsOwnerOrReadOwnly
  
 class TagList(APIView):
   qs = Tag.objects.all()
@@ -31,7 +31,7 @@ class CategoryCreateList(APIView):
 
 
 class PostCreateList(APIView):
-  # permission_classes= [IsAuthenticatedOrReadOnly ]
+  permission_classes= [IsAuthenticatedOrReadOnly ]
 
   def get(self, request):
     qs = Post.objects.all()
@@ -60,7 +60,7 @@ class PostCreateList(APIView):
 
 
 class PostDeleteEditRetrieve(APIView):
-  permission_classes = [CreatedBy]
+  permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOwnly]
 
   def get(self, request, pk):
     queryset = Post.objects.filter(id = pk)
@@ -90,24 +90,26 @@ class PostDeleteEditRetrieve(APIView):
   def delete(self, request, pk):
     queryset= Post.objects.get(id=pk)
     queryset.delete()
-
     return Response({"message": "successfull",
                      "status": True}, status=status.HTTP_204_NO_CONTENT)
 
 
-class GenericClassForGettingData(APIView):
+
+
+class CommentCreateList(APIView):
   
+  serializer = CommentSerializer
+  queryset = Comment.objects.all()
+
   def get(self, request):
+    data = self.serializer(self.queryset).data
+    return Response({
+      "data": data,
+      "message": "succesfully ",
+      "status": True
+    })
+    
+    
 
-    pass
-
-
-  def delete(self, request):
-    pass
-
-  def post(self, request,pk):
-    pass
-
-
-  def  put(self, request):
+  def post(self, request):
     pass

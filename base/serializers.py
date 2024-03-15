@@ -100,7 +100,8 @@ class PostUpdateSerializer(serializers.Serializer):
   category = serializers.PrimaryKeyRelatedField(required=False, queryset=Category.objects.all(), many=True)
 
   def update(self, instance, validated_data):
-    instance.title = validated_data.get("content", instance.title)
+ 
+    instance.title = validated_data.get("title", instance.title)
     instance.content = validated_data.get("content", instance.content)
     instance.excerpt = validated_data.get('excerpt', instance.excerpt)
     instance.draft_status = validated_data.get("draft_status", instance.draft_status)
@@ -113,3 +114,13 @@ class PostUpdateSerializer(serializers.Serializer):
 
     instance.save()
     return instance
+  
+
+
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+  class Meta:
+    model= Comment
+    fields =  ["id", "comment", "created_at", "updated_at"]
