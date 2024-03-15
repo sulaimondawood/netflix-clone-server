@@ -6,7 +6,9 @@ from authentication.models import CustomUser
 
 
 class Comment(models.Model):
-
+  post = models.ForeignKey("Post", on_delete=models.CASCADE, related_name= "post_reply" , null=True, blank=True)
+  author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
+  parent_comment = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True,related_name= "parent_reply")
   comment = models.TextField(blank=True, null=True)
   updated_at = models.DateTimeField(auto_now=True)
   created_at = models.DateTimeField(default=timezone.now)
@@ -33,7 +35,7 @@ class Post(models.Model):
   category = models.ManyToManyField('Category')
   tag= models.ManyToManyField('Tag')
   likes = models.IntegerField(default=0)
-  comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True)
+  comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, related_name="post_comment")
   views = models.IntegerField(default=0, blank=True)
   updated_at = models.DateTimeField(auto_now=True)
   created_at = models.DateTimeField(default=timezone.now )

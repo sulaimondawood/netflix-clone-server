@@ -97,19 +97,35 @@ class PostDeleteEditRetrieve(APIView):
 
 
 class CommentCreateList(APIView):
-  
+  permission_classes = [IsAuthenticatedOrReadOnly]
   serializer = CommentSerializer
   queryset = Comment.objects.all()
 
   def get(self, request):
-    data = self.serializer(self.queryset).data
+    data = self.serializer(self.queryset, many=True).data
     return Response({
       "data": data,
       "message": "succesfully ",
       "status": True
-    })
+    }, status=status.HTTP_200_OK)
     
     
 
   def post(self, request):
-    pass
+    data = self.serializer(data=request.data)
+
+    if data.is_valid():
+      data.save()
+      return Response({
+      "data": data.data,
+      "message": "succesfully ",
+      "status": True
+    }, status=status.HTTP_201_CREATED)
+
+    return Response({
+      "data": data.errors,
+      "message": "unsuccesfull ",
+      "status": False
+    }, status=status.HTTP_400_BAD_REQUEST)
+
+
